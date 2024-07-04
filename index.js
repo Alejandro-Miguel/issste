@@ -35,22 +35,27 @@ app.get('/search', (req, res) => {
   }
 
   const results = [];
-  
+  const normalizedQuery = query.toLowerCase();
+
   data.forEach(ley => {
-    if (ley.id === leyId) {
-      ley.characteristics.forEach(characteristic => {
-        const { title, contenido } = characteristic;
-        if ((title && title === query) || (contenido && contenido.includes(query))) {
-          results.push({
-            category: ley.category,
-            id: characteristic.id,
-            title: characteristic.title,
-            content: characteristic.content
-          });
-        }
-      });
+    if (!isNaN(leyId) && ley.id !== leyId) {
+      return;
     }
+
+    ley.characteristics.forEach(characteristic => {
+      const title = characteristic.title.toLowerCase();
+      const contenido = characteristic.content.toLowerCase();
+      if (title.includes(normalizedQuery) || contenido.includes(normalizedQuery)) {
+        results.push({
+          category: ley.category,
+          id: characteristic.id,
+          title: characteristic.title,
+          content: characteristic.content
+        });
+      }
+    });
   });
+
   // console.log('Resultados de búsqueda:', results); // Agregar este log para verificar los resultados
   res.send(results);
 });
