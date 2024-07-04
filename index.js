@@ -30,12 +30,15 @@ fs.readFile(dataFilePath, 'utf8', (err, jsonData) => {
 app.get('/search', (req, res) => {
   const query = req.query.q;
   const leyId = parseInt(req.query.leyId, 10);
+  const page = parseInt(req.query.page, 10) || 1;
+  const limit = parseInt(req.query.limit, 10) || 10;
+
   if (!query) {
     return res.status(400).send({ error: 'Parámetro de búsqueda es requerido' });
   }
 
-  const results = [];
   const normalizedQuery = query.toLowerCase();
+  const results = [];
 
   data.forEach(ley => {
     if (!isNaN(leyId) && ley.id !== leyId) {
@@ -56,8 +59,17 @@ app.get('/search', (req, res) => {
     });
   });
 
-  // console.log('Resultados de búsqueda:', results); // Agregar este log para verificar los resultados
-  res.send(results);
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+  const paginatedResults = results.slice(startIndex, endIndex);
+
+  res.send({
+    page,
+    limit,
+    totalResults: results.length,
+    totalPages: Math.ceil(results.length / limit),
+    results: paginatedResults
+  });
 });
 
 // Iniciar el servidor
