@@ -29,6 +29,7 @@ fs.readFile(dataFilePath, 'utf8', (err, jsonData) => {
 // Ruta de búsqueda
 app.get('/search', (req, res) => {
   const query = req.query.q;
+  const leyId = parseInt(req.query.leyId, 10);
   if (!query) {
     return res.status(400).send({ error: 'Parámetro de búsqueda es requerido' });
   }
@@ -36,19 +37,20 @@ app.get('/search', (req, res) => {
   const results = [];
   
   data.forEach(ley => {
-    ley.characteristics.forEach(characteristic => {
-      const { title, contenido } = characteristic;
-      if ((title && title.includes(query)) || (contenido && contenido.includes(query))) {
-        results.push({
-          category: ley.category,
-          id: characteristic.id,
-          title: characteristic.title,
-          content: characteristic.content
-        });
-      }
-    });
+    if (ley.id === leyId) {
+      ley.characteristics.forEach(characteristic => {
+        const { title, contenido } = characteristic;
+        if ((title && title === query) || (contenido && contenido.includes(query))) {
+          results.push({
+            category: ley.category,
+            id: characteristic.id,
+            title: characteristic.title,
+            content: characteristic.content
+          });
+        }
+      });
+    }
   });
-
   // console.log('Resultados de búsqueda:', results); // Agregar este log para verificar los resultados
   res.send(results);
 });

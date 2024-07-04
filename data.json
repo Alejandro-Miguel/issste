@@ -1,5 +1,6 @@
 [
     {
+        "id": 1,
         "category": "Ley del Instituto de Seguridad y Servicios Sociales de los Trabajadores del Estado",
         "characteristics": [
             {
@@ -1270,6 +1271,7 @@
           ]
     },
     {
+        "id": 2,
         "category": "Reglamento para el otorgamiento de pensiones de los trabajadores sujetos al régimen del artículo décimo transitorio",
         "characteristics": [
             {
